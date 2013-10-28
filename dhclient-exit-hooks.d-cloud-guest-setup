@@ -11,4 +11,7 @@ hostname $new_host_name
 hostname $new_host_name > /etc/hostname
 sed -i "/127.0.0.1/a $new_ip_address $new_host_name.$new_domain_name $new_host_name/" /etc/hosts
 perl -p -i -e 'if(/run-parts/) { s/^\\d+/unpack(\"%32C*\",qx{hostname -s})%60/e; s/^([\\d*]+\\s+)\\d+/\$1.(\$.-8)/e; }' /etc/crontab
+if test -d /usr/local/psa; then
+  PSA_PASSWORD="$(date +%s | sha256sum | base64 | head -c 25)" /usr/local/psa/admin/sbin/ch_admin_passwd
+fi
 rm /etc/dhcp/dhclient-exit-hooks.d/leaseweb-cloud-guest-setup
